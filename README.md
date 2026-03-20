@@ -28,7 +28,7 @@ OpenType の公式仕様書は実装者向けに書かれており、フォン�
 
 - [Astro](https://astro.build/) + [Starlight](https://starlight.astro.build/)（ドキュメントフレームワーク）
 - React（Playground コンポーネント、Islands Architecture）
-- [opentype.js](https://opentype.js.org/) / [harfbuzzjs](https://github.com/harfbuzz/harfbuzzjs) / [samsa-core](https://github.com/Lorp/samsa)（フォント処理）
+- [fontations](https://github.com/googlefonts/fontations)（Rust → WASM、フォントパース・グリフ描画）/ [harfbuzzjs](https://github.com/harfbuzz/harfbuzzjs)（テキストシェーピング）
 - GitHub Pages + Cloudflare DNS
 
 ## ドキュメント

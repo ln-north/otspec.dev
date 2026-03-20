@@ -92,11 +92,11 @@ otspec.dev のフェーズ別ロードマップ。各フェーズにコンテン
 
 - テーブルリファレンス用 MDX テンプレート
 - Lookup Type ページ用テンプレート
-- **opentype.js 導入** — グリフインスペクタ用
+- **fontations WASM 導入** — Rust → WASM（wasm-pack）でフォントパーサーを構築
 - コンポーネント追加:
   - `LookupDemo` — Lookup Type の動作デモ（CSS ベース軽量版）
   - `TableStructure` — テーブル構造の図解
-- グリフインスペクタ Playground（opentype.js + Canvas）
+- グリフインスペクタ Playground（fontations WASM + Canvas）
 
 ### コンテンツ
 
@@ -167,8 +167,7 @@ otspec.dev のフェーズ別ロードマップ。各フェーズにコンテン
 
 ### 実装
 
-- **samsa-core 導入** — バリアブルフォント
-- Playground 追加:
+- Playground 追加（fontations WASM のバリアブルフォント API を活用）:
   - バリアブルフォント軸スライダー
   - フォントテーブルエクスプローラ
   - カラーフォントレンダラー
@@ -206,12 +205,11 @@ otspec.dev のフェーズ別ロードマップ。各フェーズにコンテン
 ```
 Phase 0: Astro + Starlight, React, Tailwind CSS, GitHub Actions
 Phase 1: （新規ライブラリなし — CSS font-feature-settings で実現）
-Phase 2: opentype.js
-Phase 3: harfbuzzjs
-Phase 4: samsa-core
+Phase 2: fontations（Rust → WASM via wasm-pack）
+Phase 3: harfbuzzjs（C++ → WASM）
 ```
 
-Phase 1 で外部フォントライブラリを使わないことで、初期の技術的複雑さを最小に抑え、コンテンツ作成に集中する。
+fontations がフォントパース・グリフ描画・バリアブルフォントを一括カバーするため、Phase 4 で追加ライブラリは不要。Phase 1 で外部フォントライブラリを使わないことで、初期の技術的複雑さを最小に抑え、コンテンツ作成に集中する。
 
 ## ページ数の見積もり
 
