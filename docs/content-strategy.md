@@ -219,14 +219,14 @@ OpenType に特有の用語を定義。各ページから参照できるリン�
 - 各ステップでグリフストリームの変化をハイライト
 - Feature ごとにグループ化表示
 - 参考実装: Crowbar（simoncozens/crowbar）
-- 技術: harfbuzzjs + opentype.js
+- 技術: harfbuzzjs + fontations WASM
 
 **P3. バリアブルフォント軸スライダー**
 - 全 variation axis をスライダーで操作
 - リアルタイムでフォント表示が変化
 - CSS `font-variation-settings` コード生成
 - 名前付きインスタンスのプリセットボタン
-- 技術: CSS font-variation-settings + samsa-core
+- 技術: CSS font-variation-settings + fontations WASM
 
 **P4. グリフインスペクタ**
 - グリフのアウトライン（ベジェ曲線）を拡大表示
@@ -234,7 +234,7 @@ OpenType に特有の用語を定義。各ページから参照できるリン�
 - メトリクス表示: advance width, side bearings, bounding box
 - ベースライン、x-height、cap height 等のラインをオーバーレイ
 - コンポジットグリフのコンポーネント分解
-- 技術: opentype.js + Canvas
+- 技術: fontations WASM + Canvas
 
 ### 高優先（初期リリースに含める）
 
@@ -242,7 +242,7 @@ OpenType に特有の用語を定義。各ページから参照できるリン�
 - フォントファイルをドラッグ＆ドロップ
 - テーブルディレクトリ → 各テーブルの階層構造をツリービュー
 - 各フィールドをクリックすると仕様ページにジャンプ
-- 技術: opentype.js
+- 技術: fontations WASM
 
 **P6. リガチャ形成デモ**
 - テキスト入力に対してリガチャの適用をアニメーション表示
@@ -253,27 +253,27 @@ OpenType に特有の用語を定義。各ページから参照できるリン�
 **P7. cmap テーブルビジュアライザ**
 - Unicode コードポイント → グリフ ID のマッピングをインタラクティブ表示
 - 特定の文字を入力すると、どの cmap サブテーブルがマッチするかをステップ表示
-- 技術: opentype.js
+- 技術: fontations WASM
 
 **P8. カーニングペアビジュアライザ**
 - フォントのカーニングペアを一覧表示
 - 特定の文字ペアの値を検索
 - スペーシング調整をビジュアル表示（矢印と数値）
 - クラスカーニングの場合のクラス所属表示
-- 技術: opentype.js + Canvas
+- 技術: fontations WASM + Canvas
 
 ### 中優先（段階的に追加）
 
 **P9. マーク/アンカーポジショニングデモ**
 - GPOS Mark-to-Base, Mark-to-Ligature, Mark-to-Mark を可視化
 - アンカーポイントの位置をグリフ上に表示
-- 技術: harfbuzzjs + opentype.js + Canvas
+- 技術: harfbuzzjs + fontations WASM + Canvas
 
 **P10. カラーフォントレンダラー**
 - COLR/CPAL のレイヤー構造を分解表示
 - パレット色をインタラクティブに変更してプレビュー
 - CSS `font-palette` コード生成
-- 技術: opentype.js + Canvas
+- 技術: fontations WASM + Canvas
 
 **P11. スクリプト別シェーピングパイプライン**
 - ラテン、アラビア語、デーバナーガリー等のスクリプト別に HarfBuzz のパイプラインの違いを可視化
@@ -288,7 +288,7 @@ OpenType に特有の用語を定義。各ページから参照できるリン�
 **P13. デザインスペースマップ**
 - 2軸を選択して 2D マップ上でバリアブルフォントの designspace を可視化
 - マップ上の任意の点をクリック/ドラッグ
-- 技術: samsa-core + Canvas
+- 技術: fontations WASM + Canvas
 
 **P14. フォントバイナリヘックスビューア**
 - 生バイナリをヘックスダンプ形式で表示
@@ -314,17 +314,26 @@ OpenType に特有の用語を定義。各ページから参照できるリン�
 
 ### ライブラリの組み合わせ
 
-- **opentype.js**: フォントテーブルの読み取り・グリフパス抽出・Canvas/SVG 描画
-- **harfbuzzjs**: テキストシェーピングの正確な再現（WASM。Figma/Prezi/Photopea で実績）
-- **samsa-core**: バリアブルフォント解析・インスタンス生成（ES6 JS、依存ゼロ）
-
-この組み合わせは Crowbar（テキストシェーピングデバッガ）と同じ構成で実績がある。
+- **fontations**（Rust → WASM）: フォントテーブルの読み取り・グリフパス抽出・メトリクス・バリアブルフォント
+  - Google Fonts チームが開発する Rust 製フォントライブラリ
+  - クレート構成: read-fonts（低レベルパーサー）、skrifa（高レベルAPI: グリフ読み込み、メトリクス、バリエーション）
+  - wasm-pack で WASM にコンパイルし、JS から呼び出す
+  - https://github.com/googlefonts/fontations
+- **harfbuzzjs**（C++ → WASM）: テキストシェーピングの正確な再現
+  - Figma/Prezi/Photopea で実績あり
+  - fontations はシェーパーを含まないため、シェーピングは harfbuzzjs が担当
 
 ### 使い分けの原則
 
-- フォント構造の解析・グリフ描画 → opentype.js
+- フォント構造の解析・グリフ描画・メトリクス・バリアブルフォント → fontations WASM
 - テキストシェーピング（グリフ列生成） → harfbuzzjs
-- バリアブルフォント固有機能 → samsa-core
+
+### なぜ fontations か
+
+- **Rust ネイティブ + WASM**: パフォーマンスが高く、型安全。Rust の WASM エコシステムが成熟している
+- **Google Fonts のバッキング**: fontc（次世代フォントコンパイラ）と同じ基盤。活発にメンテナンスされている
+- **バリアブルフォント対応**: skrifa がバリエーション処理を内蔵しており、別ライブラリ（samsa-core 等）が不要
+- **OpenType 仕様への忠実さ**: 仕様のテーブル構造をそのまま Rust の型にマッピングしており、otspec.dev の解説と直接対応する
 
 ## 6. わかりやすさの設計
 
@@ -409,7 +418,7 @@ CSS での使い方:
   - Feature テスター・CSS ジェネレーターの UX 参考
 
 - **FontDrop!**（fontdrop.info）
-  - opentype.js でのグリフレンダリング実装参考
+  - グリフレンダリング UI の参考
 
 ### otspec.dev の独自価値
 

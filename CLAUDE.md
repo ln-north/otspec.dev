@@ -14,9 +14,8 @@ MDN が HTML/CSS/JS の仕様書（WHATWG/W3C/ECMA）を「開発者向けリフ
 
 - フレームワーク: **Astro + Starlight**
 - Playground UI: **React**（Islands Architecture で選択的ハイドレーション）
-- フォントパース: **opentype.js**
+- フォントパース: **fontations**（Rust → WASM via wasm-pack）
 - テキストシェーピング: **harfbuzzjs**（WASM）
-- バリアブルフォント: **samsa-core**
 - スタイリング: **Tailwind CSS v4**
 - 検索: **Pagefind**（Starlight 組み込み）
 - ホスティング: **GitHub Pages**（ドメインは Cloudflare DNS で管理）
@@ -35,9 +34,11 @@ otspec.dev/
 │   ├── components/
 │   │   ├── playground/       # Playground コンポーネント（React）
 │   │   └── ui/               # 共通 UI コンポーネント
-│   ├── lib/                  # フォントライブラリのラッパー
+│   ├── lib/                  # WASM ラッパー（fontations 等）
 │   └── assets/fonts/         # デモ用サンプルフォント
 ├── public/fonts/             # 静的配信フォント
+├── crates/                   # Rust クレート（WASM ビルド用）
+│   └── otspec-wasm/          # fontations ラッパー → wasm-pack で WASM に
 ├── docs/                     # プロジェクトドキュメント（設計・戦略）
 ├── astro.config.mjs
 ├── content.config.ts         # Content Collections スキーマ

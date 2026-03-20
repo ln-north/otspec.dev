@@ -41,7 +41,7 @@ MDN Web Docs は、WHATWG/W3C/ECMA の仕様書を「開発者が使えるリフ
 **Islands Architecture が Playground に最適**
 - ドキュメントページは静的 HTML で高速配信
 - Playground 部分だけを選択的にハイドレーション（`client:visible`）
-- フォントパーサー（opentype.js）やシェーパー（harfbuzzjs WASM）は重いが、必要なときだけロード
+- フォントパーサー（fontations WASM）やシェーパー（harfbuzzjs WASM）は重いが、必要なときだけロード
 
 **Cloudflare / GitHub との親和性**
 - 2026年1月に Cloudflare が Astro 社を買収（MIT ライセンス・OSS は維持）
