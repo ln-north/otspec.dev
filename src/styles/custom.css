@@ -1,0 +1,23 @@
+@layer base, starlight, theme, components, utilities;
+
+@import '@astrojs/starlight-tailwind';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+/* ランディングページ hero の中央寄せ */
+/* Starlight の scoped styles が @layer starlight.core 内にあるため !important で上書き */
+@media (min-width: 50rem) {
+  .hero {
+    grid-template-columns: 1fr !important;
+    justify-items: center !important;
+  }
+
+  .hero .stack {
+    text-align: center !important;
+    align-items: center !important;
+  }
+
+  .hero .stack > .actions {
+    justify-content: center !important;
+  }
+}
