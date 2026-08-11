@@ -1,0 +1,23 @@
+[package]
+name = "fea-wasm"
+version = "0.1.0"
+edition = "2021"
+description = "otspec.dev Playground 用: fea-rs をブラウザ (wasm32-unknown-unknown) 上で動かすための最小ラッパー"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# googlefonts/fontc への git 依存。再現性のためリビジョンを固定する。
+# 固定先: https://github.com/googlefonts/fontc/commit/a580b1d631807d75ad0468a5093eb75fb64ed952
+fea-rs = { git = "https://github.com/googlefonts/fontc.git", rev = "a580b1d631807d75ad0468a5093eb75fb64ed952" }
+wasm-bindgen = "0.2"
+# wasm 上で Rust の panic を意味のあるスタックトレースとしてブラウザコンソールに出す。
+# デフォルトの panic フックのままだと "unreachable executed" としか表示されず、
+# Playground でのエラー原因調査が困難になるため導入する。
+console_error_panic_hook = "0.1"
+
+# このクレートを otspec-dev リポジトリ全体や外側のディレクトリの workspace に
+# 巻き込ませないための空 workspace 宣言。
+[workspace]

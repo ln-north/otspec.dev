@@ -1,0 +1,14 @@
+/**
+ * 責務：Feature ページのプレビュー専用フォント（Vollkorn）の @font-face 定義
+ * 動作：可変フォント vollkorn-var.woff2 を "Vollkorn" として登録する。
+ *       サイト全文には適用せず、FeatureDemo / FeatureTester のプレビュー領域のみが参照する。
+ *       ブラウザは実際に参照されるまでこのフォントを取得しないため、
+ *       Feature ページ以外では転送コストが発生しない。
+ */
+@font-face {
+  font-family: "Vollkorn";
+  src: url("/fonts/vollkorn-var.woff2") format("woff2");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}

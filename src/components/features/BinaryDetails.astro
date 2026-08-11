@@ -1,0 +1,39 @@
+---
+/**
+ * 責務：バイナリ構造セクションの折りたたみ表示ラッパー
+ * 動作：ネイティブ <details><summary> のスタイル統一ラッパー。中身は slot で受ける。JS ゼロ
+ * 実装状態：完全実装
+ */
+interface Props {
+  /** <summary> に表示するテキスト */
+  summary?: string;
+}
+
+const { summary = "Binary structure" } = Astro.props;
+---
+
+<details class="binary-details not-content">
+  <summary>{summary}</summary>
+  <div class="binary-details-content">
+    <slot />
+  </div>
+</details>
+
+<style>
+  .binary-details {
+    margin-block: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+  }
+
+  .binary-details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+
+  .binary-details-content {
+    margin-top: 0.75rem;
+  }
+</style>

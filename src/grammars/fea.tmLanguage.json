@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "fea",
+  "scopeName": "source.fea",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#keywords" },
+    { "include": "#glyph-classes" },
+    { "include": "#class-definition" },
+    { "include": "#numbers" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "match": "#.*$",
+      "name": "comment.line.number-sign.fea"
+    },
+    "keywords": {
+      "match": "\\b(feature|lookup|sub|substitute|pos|position|by|from|ignore|useExtension|languagesystem|script|language|enum|subtable)\\b",
+      "name": "keyword.control.fea"
+    },
+    "glyph-classes": {
+      "match": "@[A-Za-z_][A-Za-z0-9_.]*",
+      "name": "variable.other.glyph-class.fea"
+    },
+    "class-definition": {
+      "begin": "\\[",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.class.begin.fea" }
+      },
+      "end": "\\]",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.class.end.fea" }
+      },
+      "name": "meta.class-definition.fea",
+      "patterns": [
+        { "include": "#glyph-classes" },
+        { "include": "#comments" }
+      ]
+    },
+    "numbers": {
+      "match": "-?\\b[0-9]+(\\.[0-9]+)?\\b",
+      "name": "constant.numeric.fea"
+    },
+    "punctuation": {
+      "match": ";",
+      "name": "punctuation.terminator.statement.fea"
+    }
+  }
+}

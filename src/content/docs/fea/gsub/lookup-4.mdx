@@ -1,0 +1,121 @@
+---
+title: "Lookup Type 4 — Ligature Substitution"
+description: "How to write Ligature Substitution (GSUB Lookup Type 4) in an OpenType Feature File — the rule syntax, and how the Lookup Type is determined from the shape of the rule."
+---
+
+import RuleEditor from "@/components/playground/RuleEditor";
+
+**Ligature Substitution** is a GSUB rule that replaces a sequence of two or more glyphs with a single glyph.
+
+```fea
+sub f i by fi;
+```
+
+Rules are written inside a feature block. Used in the `liga` feature, for example:
+
+```fea
+feature liga {
+    sub f i by fi;
+} liga;
+```
+
+## Syntax
+
+```fea
+sub <glyph sequence> by <glyph>;
+```
+
+- `<glyph sequence>` — two or more glyphs or glyph classes, written in the order they occur in the text.
+- `<glyph>` — the single glyph that replaces the whole sequence.
+
+### Shorthand
+
+`sub` is the short form of `substitute`. These two rules are the same:
+
+```fea
+substitute f i by fi;
+```
+
+```fea
+sub f i by fi;
+```
+
+### Rule order
+
+A contiguous run of rules can be written in any order. The compiler reorders the rules as it stores them, so that longer sequences are matched first.
+
+### How the lookup type is determined
+
+The Lookup Type is not written in the .fea file. The compiler determines it from the shape of the rule.
+
+```fea
+# two glyphs → one glyph = Ligature Substitution (Lookup Type 4)
+sub f i by fi;
+```
+
+```fea
+# one glyph → two glyphs = Multiple Substitution (Lookup Type 2)
+sub fi by f i;
+```
+
+## Try it
+
+### Latin ligatures (liga)
+
+<RuleEditor
+  client:visible
+  initialFea={`feature liga {
+    sub f f i by f_f_i;
+    sub f f l by f_f_l;
+    sub f f by f_f;
+    sub f i by fi;
+    sub f l by fl;
+} liga;`}
+  initialPreviewText="difficult waffle"
+/>
+
+### Arabic lam-alef (rlig)
+
+<RuleEditor
+  client:visible
+  fontPath="/fonts/noto-naskh-arabic-workbench.ttf"
+  previewDir="rtl"
+  previewLang="ar"
+  initialFea={`languagesystem arab dflt;
+
+feature rlig {
+    sub uni0644 uni0627 by uniFEFB;
+} rlig;`}
+  initialPreviewText={"ل + ا = لا"}
+/>
+
+### Fractions (frac)
+
+<RuleEditor
+  client:visible
+  fontPath="/fonts/vollkorn-workbench-frac.ttf"
+  initialFea={`feature frac {
+    sub one slash two by onehalf;
+    sub one slash four by onequarter;
+    sub three slash four by threequarters;
+} frac;`}
+  initialPreviewText="1/2 1/4 3/4"
+/>
+
+## Features that use this lookup type
+
+The registry recommends this lookup type for the following features.
+
+- [`liga`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga) — Standard Ligatures. Ligatures such as *fi* and *ffl* that the design intends to be applied in normal typesetting.
+- [`dlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig) — Discretionary Ligatures. Decorative ligatures applied only when the user asks for them explicitly.
+- [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) — Historical Ligatures. Ligatures from historical orthography, such as long s combinations.
+- [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) — Required Ligatures. Ligatures the script requires, such as Arabic *lam-alef*.
+- [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition. The composition half: merges a character sequence into a single glyph before other features run.
+- [`frac`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-frac) — Fractions. One recommended implementation maps digit–slash–digit sequences to precomposed fraction glyphs.
+
+[`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig) (Contextual Ligatures) also forms ligatures, but only in specific contexts. It is therefore written not as plain rules like the ones on this page, but as chaining contextual rules that invoke Ligature Substitution as an action.
+
+## Specifications
+
+- [Adobe OpenType Feature File Specification, §5.d — GSUB LookupType 4: Ligature substitution](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#5.d)
+- [Microsoft OpenType Specification, GSUB — Lookup type 4 subtable: ligature substitution](https://learn.microsoft.com/en-us/typography/opentype/spec/gsub#lookup-type-4-subtable-ligature-substitution)
