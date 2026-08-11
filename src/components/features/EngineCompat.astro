@@ -1,0 +1,104 @@
+---
+/**
+ * 責務：Feature タグのシェーピングエンジン/ブラウザ対応状況テーブル
+ * 動作：props の tag で src/data/engine-support.ts を引いて静的テーブルを描画する。
+ *       データ未登録のタグが渡された場合はビルドを失敗させる（throw）。
+ *       これによりページ執筆時に engine-support.ts へのデータ登録漏れを強制する。
+ * 実装状態：完全実装
+ */
+import { engineSupport, type SupportCell } from "@/data/engine-support";
+
+interface Props {
+  tag: string;
+}
+
+const { tag } = Astro.props;
+const support = engineSupport[tag];
+
+if (!support) {
+  throw new Error(
+    `EngineCompat: タグ "${tag}" の対応状況データが src/data/engine-support.ts に登録されていません。`,
+  );
+}
+
+const levelLabel: Record<SupportCell["level"], string> = {
+  yes: "Yes",
+  no: "No",
+  partial: "Partial",
+  unknown: "Unknown",
+};
+
+const rows: { label: string; cell: SupportCell }[] = [
+  { label: "HarfBuzz", cell: support.shapers.harfbuzz },
+  { label: "CoreText", cell: support.shapers.coretext },
+  { label: "DirectWrite", cell: support.shapers.directwrite },
+  { label: "Chrome (CSS)", cell: support.cssControl.chrome },
+  { label: "Firefox (CSS)", cell: support.cssControl.firefox },
+  { label: "Safari (CSS)", cell: support.cssControl.safari },
+];
+---
+
+<table class="engine-compat not-content">
+  <thead>
+    <tr>
+      <th scope="col">Engine / Browser</th>
+      <th scope="col">Support</th>
+      <th scope="col">Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      rows.map(({ label, cell }) => (
+        <tr>
+          <th scope="row">{label}</th>
+          <td data-level={cell.level}>{levelLabel[cell.level]}</td>
+          <td>
+            {cell.note}
+            {cell.source && (
+              <>
+                {" "}
+                (<a href={cell.source} target="_blank" rel="noopener noreferrer">source</a>)
+              </>
+            )}
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<style>
+  .engine-compat {
+    width: 100%;
+    border-collapse: collapse;
+    margin-block: 1rem;
+    font-size: var(--sl-text-sm);
+  }
+
+  .engine-compat th,
+  .engine-compat td {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--sl-color-gray-5);
+    text-align: left;
+  }
+
+  .engine-compat thead th {
+    background-color: var(--sl-color-bg-nav);
+  }
+
+  td[data-level="yes"] {
+    color: var(--sl-color-green);
+  }
+
+  td[data-level="no"] {
+    color: var(--sl-color-red);
+  }
+
+  td[data-level="partial"] {
+    color: var(--sl-color-orange);
+  }
+
+  td[data-level="unknown"] {
+    color: var(--sl-color-gray-3);
+  }
+</style>

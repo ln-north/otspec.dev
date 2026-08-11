@@ -1,0 +1,19 @@
+---
+/**
+ * 責務：frontmatter の feature.specUrl から Microsoft OpenType 仕様へのリンクを描画する
+ * 動作：props を取らず、Astro.locals.starlightRoute.entry.data.feature を自給する。
+ *       feature が未定義のページでは何も描画しない。
+ * 実装状態：完全実装
+ */
+const feature = Astro.locals.starlightRoute.entry.data.feature;
+---
+
+{
+  feature && (
+    <p class="spec-link">
+      <a href={feature.specUrl} target="_blank" rel="noopener noreferrer">
+        OpenType Specification: {feature.tag} ({feature.name})
+      </a>
+    </p>
+  )
+}

@@ -2,3 +2,11 @@ node_modules/
 dist/
 .astro/
 .DS_Store
+
+# crates/fea-wasm のビルド成果物（npm run build:wasm で再生成する）。
+# コミットするかは未決定のため、当面は生成物として扱う。
+crates/fea-wasm/target/
+crates/fea-wasm/pkg/
+
+# Python のバイトコードキャッシュ
+__pycache__/

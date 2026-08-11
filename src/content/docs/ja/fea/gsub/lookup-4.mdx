@@ -1,0 +1,121 @@
+---
+title: "Lookup Type 4 — Ligature Substitution"
+description: "OpenType Feature File で Ligature Substitution（GSUB Lookup Type 4）を書く方法 — 規則の構文と、規則の形から Lookup Type が決まる仕組み。"
+---
+
+import RuleEditor from "@/components/playground/RuleEditor";
+
+**Ligature Substitution** は、2 つ以上のグリフからなる列を 1 つのグリフに置き換える GSUB の規則です。
+
+```fea
+sub f i by fi;
+```
+
+規則はフィーチャーブロックの中に書きます。たとえば `liga` フィーチャーで使うと次のようになります。
+
+```fea
+feature liga {
+    sub f i by fi;
+} liga;
+```
+
+## 構文
+
+```fea
+sub <glyph sequence> by <glyph>;
+```
+
+- `<glyph sequence>` — 2 つ以上のグリフまたはグリフクラス。テキストに現れる順に書きます。
+- `<glyph>` — 列全体を置き換える 1 つのグリフ。
+
+### 省略形
+
+`sub` は `substitute` の省略形です。次の 2 つは同じ規則です。
+
+```fea
+substitute f i by fi;
+```
+
+```fea
+sub f i by fi;
+```
+
+### 規則の順序
+
+ひと続きの規則は、どの順序で書いてもかまいません。長い列が先に照合されるよう、コンパイラが規則を並べ替えて格納します。
+
+### Lookup Type の判別
+
+Lookup Type は .fea に書きません。コンパイラが規則の形から判別します。
+
+```fea
+# 2 グリフ → 1 グリフ = Ligature Substitution（Lookup Type 4）
+sub f i by fi;
+```
+
+```fea
+# 1 グリフ → 2 グリフ = Multiple Substitution（Lookup Type 2）
+sub fi by f i;
+```
+
+## 試してみる
+
+### ラテン文字の合字（liga）
+
+<RuleEditor
+  client:visible
+  initialFea={`feature liga {
+    sub f f i by f_f_i;
+    sub f f l by f_f_l;
+    sub f f by f_f;
+    sub f i by fi;
+    sub f l by fl;
+} liga;`}
+  initialPreviewText="difficult waffle"
+/>
+
+### アラビア文字の lam-alef（rlig）
+
+<RuleEditor
+  client:visible
+  fontPath="/fonts/noto-naskh-arabic-workbench.ttf"
+  previewDir="rtl"
+  previewLang="ar"
+  initialFea={`languagesystem arab dflt;
+
+feature rlig {
+    sub uni0644 uni0627 by uniFEFB;
+} rlig;`}
+  initialPreviewText={"ل + ا = لا"}
+/>
+
+### 分数（frac）
+
+<RuleEditor
+  client:visible
+  fontPath="/fonts/vollkorn-workbench-frac.ttf"
+  initialFea={`feature frac {
+    sub one slash two by onehalf;
+    sub one slash four by onequarter;
+    sub three slash four by threequarters;
+} frac;`}
+  initialPreviewText="1/2 1/4 3/4"
+/>
+
+## この Lookup Type を使うフィーチャー
+
+レジストリは、次のフィーチャーにこの Lookup Type を推奨しています。
+
+- [`liga`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga) — Standard Ligatures。*fi* や *ffl* など、書体デザインとして通常の組版で適用したい合字。
+- [`dlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig) — Discretionary Ligatures。ユーザーが明示的に指定したときだけ適用する装飾的な合字。
+- [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) — Historical Ligatures。long s の組み合わせなど、歴史的な表記の合字。
+- [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) — Required Ligatures。アラビア文字の *lam-alef* など、用字系が必須とする合字。
+- [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition。その合成側の半分。他のフィーチャーが動く前に、文字の並びを 1 つのグリフへまとめる。
+- [`frac`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-frac) — Fractions。推奨実装の 1 つは、数字・スラッシュ・数字の並びを合成済みの分数グリフに対応づける。
+
+[`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig)（Contextual Ligatures）も合字を組みますが、働くのは特定の文脈に限られます。そのため、このページのような素の規則ではなく、Ligature Substitution を動作として呼び出す連鎖文脈規則で書きます。
+
+## 仕様書
+
+- [Adobe OpenType Feature File Specification, §5.d — GSUB LookupType 4: Ligature substitution](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#5.d)
+- [Microsoft OpenType Specification, GSUB — Lookup type 4 subtable: ligature substitution](https://learn.microsoft.com/en-us/typography/opentype/spec/gsub#lookup-type-4-subtable-ligature-substitution)

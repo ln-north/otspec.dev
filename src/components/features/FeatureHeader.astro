@@ -1,0 +1,92 @@
+---
+/**
+ * 責務：Feature タグページ冒頭のクイックファクト欄
+ * 動作：props を取らず、Astro.locals.starlightRoute.entry.data.feature から自給して
+ *       tag / 正式名 / カテゴリ / デフォルト適用の有無 / Lookup / CSS プロパティを描画する。
+ *       feature が未定義のページ（Feature タグページ以外）で使われた場合は何も描画しない。
+ * 実装状態：完全実装
+ */
+const feature = Astro.locals.starlightRoute.entry.data.feature;
+---
+
+{
+  feature && (
+    <div class="feature-quick-facts not-content">
+      <dl>
+        <div class="fact">
+          <dt>Tag</dt>
+          <dd>
+            <code>{feature.tag}</code>
+          </dd>
+        </div>
+        <div class="fact">
+          <dt>Name</dt>
+          <dd>{feature.name}</dd>
+        </div>
+        <div class="fact">
+          <dt>Category</dt>
+          <dd>{feature.category}</dd>
+        </div>
+        <div class="fact">
+          <dt>Applied by default</dt>
+          <dd>{feature.appliedByDefault ? "Yes" : "No"}</dd>
+        </div>
+        <div class="fact">
+          <dt>Lookup</dt>
+          <dd>
+            {feature.lookups
+              .map((lookup) => `${lookup.table} type ${lookup.type}`)
+              .join(", ")}
+          </dd>
+        </div>
+        <div class="fact">
+          <dt>CSS</dt>
+          <dd>
+            {feature.css.map((entry, index) => (
+              <>
+                {index > 0 && ", "}
+                <code>{entry.property}</code>
+              </>
+            ))}
+          </dd>
+        </div>
+      </dl>
+    </div>
+  )
+}
+
+<style>
+  .feature-quick-facts {
+    margin-block: 1.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--sl-color-gray-5);
+    border-radius: 0.5rem;
+    background-color: var(--sl-color-bg-nav);
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 0.75rem 1.5rem;
+    margin: 0;
+  }
+
+  .fact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  dt {
+    font-size: var(--sl-text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--sl-color-gray-3);
+  }
+
+  dd {
+    margin: 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-white);
+  }
+</style>

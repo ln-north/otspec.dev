@@ -1,7 +1,9 @@
 ---
 /**
  * 責務：Starlight のデフォルト Header をオーバーライドし、ナビゲーションリンクを追加する
- * 動作：SiteTitle の右に Tables / Glossary のリンクを表示する。ロケールに応じてラベルとリンク先を切り替える。
+ * 動作：SiteTitle の右に Feature File / OpenType の二本柱リンクを表示する。
+ *       Glossary はサイドバー側に移したためヘッダー中央には出さない。
+ *       ロケールに応じてリンク先の prefix を切り替える（ラベルは固有名詞のため不変）。
  * 実装状態：完全実装
  */
 import config from 'virtual:starlight/user-config';
@@ -19,10 +21,10 @@ const locale = Astro.locals.starlightRoute.locale;
 const isJa = locale === 'ja';
 const prefix = isJa ? '/ja' : '';
 
-/** ナビゲーションリンクの定義 */
+/** ナビゲーションリンクの定義（Feature File が先、OpenType が後） */
 const navLinks = [
-	{ href: `${prefix}/reference/tables/`, label: isJa ? 'テーブル' : 'Tables' },
-	{ href: `${prefix}/glossary/`, label: isJa ? '用語集' : 'Glossary' },
+	{ href: `${prefix}/fea/`, label: 'Feature File' },
+	{ href: `${prefix}/opentype/`, label: 'OpenType' },
 ];
 ---
 
