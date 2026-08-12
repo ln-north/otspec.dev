@@ -4,6 +4,15 @@
 
 https://otspec.dev
 
+> [!IMPORTANT]
+> **🚧 構築中です。まだコントリビューションを受け付けていません。**
+>
+> サイトの構造もページの形も固まっておらず、中身のあるページは現時点で 1 枚だけです。コラボレーター以外による Pull Request と Issue の作成は現在ブロックしています。理由は [CONTRIBUTING.md](CONTRIBUTING.md) に書いています。
+>
+> **🚧 Under construction. Not accepting contributions yet.**
+>
+> Pull requests and issues from outside collaborators are currently disabled. See [CONTRIBUTING.md](CONTRIBUTING.md) for why.
+
 ## なぜ作るのか
 
 OpenType の公式仕様書は実装者向けに書かれており、フォント開発者や Web 開発者が読むには障壁が高い。MDN が HTML/CSS/JS の仕様書を「開発者が実際に使えるリファレンス」に変換しているように、otspec.dev は OpenType 仕様に対して同じことを行う。
