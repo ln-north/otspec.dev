@@ -5,7 +5,7 @@ description: "OpenType Feature File で Ligature Substitution（GSUB Lookup Type
 
 import RuleEditor from "@/components/playground/RuleEditor";
 
-**Ligature Substitution** は、2 つ以上のグリフからなる列を 1 つのグリフに置き換える GSUB の規則です。
+**Ligature Substitution** は、2 つ以上のグリフ・グリフクラスを 1 つのグリフに置き換える GSUB の規則です。
 
 ```fea
 sub f i by fi;
@@ -25,7 +25,7 @@ feature liga {
 sub <glyph sequence> by <glyph>;
 ```
 
-- `<glyph sequence>` — 2 つ以上のグリフまたはグリフクラス。テキストに現れる順に書きます。
+- `<glyph sequence>` — 2 つ以上のグリフまたはグリフクラス。現れる順で書きます。
 - `<glyph>` — 列全体を置き換える 1 つのグリフ。
 
 ### 省略形
@@ -42,11 +42,13 @@ sub f i by fi;
 
 ### 規則の順序
 
-ひと続きの規則は、どの順序で書いてもかまいません。長い列が先に照合されるよう、コンパイラが規則を並べ替えて格納します。
+ブロック内の規則は、長い列が先に照合されます。
+
+適用されるのは最初に一致した規則です（先勝ち）。そのため、置き換え元のグリフ数が多い規則ほど先に格納されている必要があります。ただし並べ替えはコンパイラが行うと仕様で定められているため、書く順序は気にしなくてかまいません。
 
 ### Lookup Type の判別
 
-Lookup Type は .fea に書きません。コンパイラが規則の形から判別します。
+Lookup Type 2 と書式が似ていますが、Lookup Type を明示する必要はありません。コンパイラが規則の形から判別します。
 
 ```fea
 # 2 グリフ → 1 グリフ = Ligature Substitution（Lookup Type 4）
@@ -89,16 +91,16 @@ sub fi by f i;
 
 ## この Lookup Type を使うフィーチャー
 
-レジストリは、次のフィーチャーにこの Lookup Type を推奨しています。
+OpenType 仕様にあるフィーチャーのうち、次のものはこの Lookup Type での実装が推奨されています。
 
-- [`liga`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga) — Standard Ligatures。*fi* や *ffl* など、書体デザインとして通常の組版で適用したい合字。
+- [`liga`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga) — Standard Ligatures。*fi* や *ffl* など、通常の合字。
 - [`dlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig) — Discretionary Ligatures。ユーザーが明示的に指定したときだけ適用する装飾的な合字。
 - [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) — Historical Ligatures。long s の組み合わせなど、歴史的な表記の合字。
 - [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) — Required Ligatures。アラビア文字の *lam-alef* など、用字系が必須とする合字。
 - [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition。その合成側の半分。他のフィーチャーが動く前に、文字の並びを 1 つのグリフへまとめる。
 - [`frac`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-frac) — Fractions。推奨実装の 1 つは、数字・スラッシュ・数字の並びを合成済みの分数グリフに対応づける。
 
-[`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig)（Contextual Ligatures）も合字を組みますが、働くのは特定の文脈に限られます。そのため、このページのような素の規則ではなく、Ligature Substitution を動作として呼び出す連鎖文脈規則で書きます。
+[`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig)（Contextual Ligatures）でも合字を組みますが、特定の文脈でだけ働くため、文脈依存の規則で書きます。
 
 ## 仕様書
 

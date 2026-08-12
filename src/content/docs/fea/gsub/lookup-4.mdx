@@ -5,7 +5,7 @@ description: "How to write Ligature Substitution (GSUB Lookup Type 4) in an Open
 
 import RuleEditor from "@/components/playground/RuleEditor";
 
-**Ligature Substitution** is a GSUB rule that replaces a sequence of two or more glyphs with a single glyph.
+**Ligature Substitution** is a GSUB rule that replaces two or more glyphs or glyph classes with a single glyph.
 
 ```fea
 sub f i by fi;
@@ -25,7 +25,7 @@ feature liga {
 sub <glyph sequence> by <glyph>;
 ```
 
-- `<glyph sequence>` — two or more glyphs or glyph classes, written in the order they occur in the text.
+- `<glyph sequence>` — two or more glyphs or glyph classes, written in the order they occur.
 - `<glyph>` — the single glyph that replaces the whole sequence.
 
 ### Shorthand
@@ -42,11 +42,13 @@ sub f i by fi;
 
 ### Rule order
 
-A contiguous run of rules can be written in any order. The compiler reorders the rules as it stores them, so that longer sequences are matched first.
+Within a block, longer sequences are matched first.
+
+The first matching rule is the one applied (first match wins), so rules that replace more glyphs must be stored first. The specification requires the compiler to do this sorting, so the order you write the rules in does not matter.
 
 ### How the lookup type is determined
 
-The Lookup Type is not written in the .fea file. The compiler determines it from the shape of the rule.
+The syntax is similar to Lookup Type 2, but there is no need to state the Lookup Type. The compiler determines it from the shape of the rule.
 
 ```fea
 # two glyphs → one glyph = Ligature Substitution (Lookup Type 4)
@@ -89,16 +91,16 @@ sub fi by f i;
 
 ## Features that use this lookup type
 
-The registry recommends this lookup type for the following features.
+The OpenType specification recommends implementing the following features with this lookup type.
 
-- [`liga`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga) — Standard Ligatures. Ligatures such as *fi* and *ffl* that the design intends to be applied in normal typesetting.
+- [`liga`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga) — Standard Ligatures. Common ligatures such as *fi* and *ffl*.
 - [`dlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig) — Discretionary Ligatures. Decorative ligatures applied only when the user asks for them explicitly.
 - [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) — Historical Ligatures. Ligatures from historical orthography, such as long s combinations.
 - [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) — Required Ligatures. Ligatures the script requires, such as Arabic *lam-alef*.
 - [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition. The composition half: merges a character sequence into a single glyph before other features run.
 - [`frac`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-frac) — Fractions. One recommended implementation maps digit–slash–digit sequences to precomposed fraction glyphs.
 
-[`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig) (Contextual Ligatures) also forms ligatures, but only in specific contexts. It is therefore written not as plain rules like the ones on this page, but as chaining contextual rules that invoke Ligature Substitution as an action.
+[`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig) (Contextual Ligatures) also forms ligatures, but it works only in specific contexts, so it is written with contextual rules.
 
 ## Specifications
 
