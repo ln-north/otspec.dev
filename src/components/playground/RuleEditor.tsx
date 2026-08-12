@@ -13,6 +13,13 @@
  * WASM モジュールとベースフォントは初回コンパイル時に遅延ロードし、
  * 以降のコンパイルでは使い回す。
  *
+ * sandbox としての不変条件（同一ページに何個並べても互いに干渉しないための規律）：
+ * - I1: 自分が `document.fonts.add` する FontFace の family 名は uid（`useId()` 由来）を
+ *   含み、ページ内で一意にする
+ * - I2: `document.fonts.delete` は自分が保持するオブジェクト参照に対してのみ行う
+ *   （名前指定の削除はしない）
+ * - I3: unmount 後は `document.fonts.add` も setState もしない
+ *
  * Playground の目的は「書いた規則の効果を見る」ことなので、`.fea` ソースに
  * `feature <tag> { ... } <tag>;` として書かれたタグは、ブラウザの既定 ON/OFF
  * （`frac` のように既定 OFF のものも含む）によらずすべて有効化する。
@@ -23,7 +30,7 @@
  *
  * 実装状態：完全実装
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { compileFea } from "@/lib/fea-compiler";
 import { assembleFont, getGlyphOrder } from "@/lib/font-assembler";
 import { buildFontFeatureSettings, extractFeatureTags } from "@/lib/feature-css";
@@ -86,10 +93,10 @@ function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 }
 
 /**
- * `fontPath` からファイル名部分（拡張子を除く）を取り出し、font-family 名の
- * 一意化に使えるスラッグにする。「適用前」用の font-family は `fontFamily` prop
- * だけでは 1 ページに複数の RuleEditor（fontPath が異なる）が並んだ時に衝突する
- * ため、fontPath 由来のスラッグを足して一意にする。
+ * `fontPath` からファイル名部分（拡張子を除く）を取り出し、font-family 名に
+ * 付与するスラッグにする。一意性の担保はインスタンス単位の uid（`useId()` 由来）が
+ * 行うため、このスラッグ自体は一意性に寄与しない。`document.fonts` を開いたときに
+ * どの fontPath 由来の FontFace かを人間が判別できるようにするための可読性のみが目的。
  */
 function slugFromFontPath(path: string): string {
   const fileName = path.split("/").pop() ?? path;
@@ -115,9 +122,18 @@ export default function RuleEditor({
     computeFeatureSettings(initialFea),
   );
 
-  // 1 ページに複数の RuleEditor が並ぶため、font-family 名は fontPath ごとに一意にする。
-  // 同名で登録すると、同じ文字を含むフォント同士（ラテン合字用と分数用）が互いを覆う
-  const afterFontFamily = `${fontFamily} ${slugFromFontPath(fontPath)}`;
+  // React の useId() は Astro island 間・同一 island 内の複数インスタンス間で一意であり、
+  // SSR とハイドレーションでも値が一致する（`@astrojs/react` が island ごとに
+  // identifierPrefix を採番して React に渡すため）。id の区切り文字はバージョンで
+  // 変遷してきた（`:r0:` → `«r0»` → `_r0_`）ため、英数字・アンダースコア・ハイフン
+  // 以外を除去して uid とする。区切りは全 id で一様なので除去しても一意性は保たれる
+  const uid = useId().replace(/[^A-Za-z0-9_-]/g, "");
+
+  // font-family 名はインスタンス単位（uid）で一意にする（I1）。同名で登録すると、
+  // 同じ文字を含むフォント同士（例: ラテン合字用と分数用の 2 インスタンス）が
+  // 互いを覆う。slug は一意性には寄与せず、document.fonts を開いたときに
+  // どの fontPath 由来か判別できるようにするための可読性のためだけに残す
+  const afterFontFamily = `${fontFamily} ${slugFromFontPath(fontPath)} ${uid}`;
   // 「適用前」（規則を適用しないワークベンチフォントそのまま）を登録する font-family 名
   const beforeFontFamily = `${afterFontFamily} Raw`;
 
@@ -213,9 +229,12 @@ export default function RuleEditor({
     };
   }, [fontPath, beforeFontFamily]);
 
-  // アンマウント時に登録した FontFace を片付ける
+  // アンマウント時に登録した FontFace を片付ける。cleanup の先頭で generation を
+  // 進めることで、in-flight のコンパイル継続（150-183 行の世代照合）が unmount 後に
+  // document.fonts.add / setState を行わないようにする（I3）
   useEffect(() => {
     return () => {
+      generation.current++;
       if (activeFontFace.current) {
         document.fonts.delete(activeFontFace.current);
       }
@@ -228,11 +247,11 @@ export default function RuleEditor({
   return (
     <div className="not-content my-4 grid gap-4 md:grid-cols-2">
       <div>
-        <label htmlFor="rule-editor-fea" className="mb-1 block text-sm font-medium">
+        <label htmlFor={`${uid}-fea`} className="mb-1 block text-sm font-medium">
           .fea source
         </label>
         <textarea
-          id="rule-editor-fea"
+          id={`${uid}-fea`}
           className="h-64 w-full resize-y rounded border border-[var(--sl-color-gray-5)] bg-[var(--sl-color-bg)] p-3 font-mono text-sm text-[var(--sl-color-white)] focus:outline focus:outline-[var(--sl-color-accent)]"
           value={feaSource}
           onChange={(event) => setFeaSource(event.target.value)}
@@ -242,11 +261,11 @@ export default function RuleEditor({
       </div>
 
       <div dir={previewDir} lang={previewLang}>
-        <label htmlFor="rule-editor-preview-text" className="mb-1 block text-sm font-medium">
+        <label htmlFor={`${uid}-preview-text`} className="mb-1 block text-sm font-medium">
           Preview text
         </label>
         <input
-          id="rule-editor-preview-text"
+          id={`${uid}-preview-text`}
           type="text"
           className="mb-2 w-full rounded border border-[var(--sl-color-gray-5)] bg-[var(--sl-color-bg)] p-2 font-mono text-sm text-[var(--sl-color-white)] focus:outline focus:outline-[var(--sl-color-accent)]"
           value={previewText}

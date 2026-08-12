@@ -23,7 +23,14 @@ export function buildFontFeatureSettings(
     .join(", ");
 }
 
-/** `feature <tag> { ... } <tag>;` ブロックの開始行にマッチする正規表現。行頭の空白は許す */
+/**
+ * `feature <tag> { ... } <tag>;` ブロックの開始行にマッチする正規表現。行頭の空白は許す。
+ * モジュールスコープの共有インスタンス（`g` フラグ付き）なので、呼び出し間で
+ * `lastIndex` の状態が残りうる。`matchAll` は呼び出しのたびに正規表現を複製して
+ * 走査する（ECMAScript 仕様）ため `lastIndex` を汚染しない。この性質に依存しているため、
+ * このパターンは `matchAll` からのみ使用すること。`exec` / `test` を直接呼ぶと
+ * `lastIndex` 汚染で別呼び出しの結果が化けるため使わない
+ */
 const FEATURE_BLOCK_PATTERN = /^[ \t]*feature\s+([A-Za-z0-9]{4})\b/gm;
 
 /**

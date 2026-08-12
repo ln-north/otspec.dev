@@ -2,7 +2,15 @@
  * 責務：fea-wasm（`crates/fea-wasm`）の遅延ロードと `.fea` コンパイル呼び出しをまとめる。
  * 動作：WASM モジュール（約 1.9MB）は初回呼び出し時に一度だけ動的 import・初期化し、
  * 以降の呼び出しでは同じインスタンスを使い回す（Playground に複数コンポーネントが
- * あっても二重ロードしない）。
+ * あっても二重ロードしない）。ロードが reject した場合は modulePromise を null に戻し、
+ * 次回呼び出しで再試行できるようにする（一過性の fetch 失敗をページ全体の
+ * 恒久故障に固定化しないため）。
+ *
+ * 複数の RuleEditor インスタンスがこの WASM モジュールを共有できる根拠：
+ * `compile_fea_js`（`crates/fea-wasm/src/lib.rs`）は呼び出しごとに新規 `Compiler` を
+ * 構築しており、コンパイルは呼び出しごとに純関数として振る舞う。fea-rs 内の可変
+ * static は FileId 採番カウンタ（`fea-rs/src/parse/source.rs` の AtomicU32、出力には
+ * 影響しない）のみで、インスタンス間の干渉経路にならない。
  * 実装状態：完全実装
  *
  * 注意：import 先の `../../crates/fea-wasm/pkg/` は `wasm-pack build --target web
@@ -22,7 +30,13 @@ function loadModule(): Promise<FeaWasmModule> {
       // 既定の URL 解決（import.meta.url 起点で fea_wasm_bg.wasm を fetch）に任せる
       await mod.default();
       return mod;
-    })();
+    })().catch((err: unknown) => {
+      // 一過性の失敗（wasm fetch の失敗等）を全インスタンスの恒久故障として
+      // 固定化しない。reject を観測したら保持していた Promise を手放し、
+      // 次回コンパイル時に再度ロードを試せるようにする
+      modulePromise = null;
+      throw err;
+    });
   }
   return modulePromise;
 }
