@@ -8,7 +8,7 @@ MDN が HTML/CSS/JS の仕様書（WHATWG/W3C/ECMA）を「開発者向けリフ
 
 - サイト: https://otspec.dev
 - 原典仕様: https://learn.microsoft.com/en-us/typography/opentype/spec/
-- ライセンス: MIT（予定）
+- ライセンス: 文章 CC BY 4.0 / コード例 CC0 1.0 / ソフトウェア MIT（詳細は [LICENSE.md](LICENSE.md)）
 
 ## 技術スタック
 

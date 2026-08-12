@@ -44,4 +44,9 @@ OpenType の公式仕様書は実装者向けに書かれており、フォン�
 
 ## ライセンス
 
-MIT
+対象ごとに分けている。詳細は [LICENSE.md](LICENSE.md) を参照。
+
+- **文章** — [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- **コード例**（`.fea` スニペット等） — [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)。帰属表示なしで自分のフォントにコピーできる
+- **ソフトウェア** — MIT
+- **同梱フォント** — OFL 1.1（第三者の著作物）
