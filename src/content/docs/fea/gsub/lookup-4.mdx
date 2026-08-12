@@ -28,6 +28,8 @@ sub <glyph sequence> by <glyph>;
 - `<glyph sequence>` — two or more glyphs or glyph classes, written in the order they occur.
 - `<glyph>` — the single glyph that replaces the whole sequence.
 
+{/* TODO: /fea/syntax/glyph-classes/ 作成時にグリフクラスへリンク */}
+
 ### Shorthand
 
 `sub` is the short form of `substitute`. These two rules are the same:
@@ -48,7 +50,7 @@ The first matching rule is the one applied (first match wins), so rules that rep
 
 ### How the lookup type is determined
 
-The syntax is similar to Lookup Type 2, but there is no need to state the Lookup Type. The compiler determines it from the shape of the rule.
+The syntax is similar to [Lookup Type 2](/fea/gsub/lookup-2/), but there is no need to state the Lookup Type. The compiler determines it from the shape of the rule.
 
 ```fea
 # two glyphs → one glyph = Ligature Substitution (Lookup Type 4)
@@ -91,18 +93,22 @@ sub fi by f i;
 
 ## Features that use this lookup type
 
+{/* TODO: /opentype/gsub/{tag}/ 作成時に各フィーチャーの外部リンクを内部リンクへ差し替え */}
+
 The OpenType specification recommends implementing the following features with this lookup type.
 
 - [`liga`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga) — Standard Ligatures. Common ligatures such as *fi* and *ffl*.
 - [`dlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig) — Discretionary Ligatures. Decorative ligatures applied only when the user asks for them explicitly.
 - [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) — Historical Ligatures. Ligatures from historical orthography, such as long s combinations.
 - [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) — Required Ligatures. Ligatures the script requires, such as Arabic *lam-alef*.
-- [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition. The composition half: merges a character sequence into a single glyph before other features run.
+- [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition. Merges a character sequence into a single glyph before other features run.
 - [`frac`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-frac) — Fractions. One recommended implementation maps digit–slash–digit sequences to precomposed fraction glyphs.
 
 [`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig) (Contextual Ligatures) also forms ligatures, but it works only in specific contexts, so it is written with contextual rules.
 
 ## Specifications
+
+{/* TODO: OpenType 柱でバイナリ構造解説の置き場所が決まったらリンクを追加 */}
 
 - [Adobe OpenType Feature File Specification, §5.d — GSUB LookupType 4: Ligature substitution](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#5.d)
 - [Microsoft OpenType Specification, GSUB — Lookup type 4 subtable: ligature substitution](https://learn.microsoft.com/en-us/typography/opentype/spec/gsub#lookup-type-4-subtable-ligature-substitution)

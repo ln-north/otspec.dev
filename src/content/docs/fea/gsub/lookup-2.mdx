@@ -1,0 +1,96 @@
+---
+title: "Lookup Type 2 — Multiple Substitution"
+description: "How to write Multiple Substitution (GSUB Lookup Type 2) in an OpenType Feature File — the syntax of the rule that splits one glyph into several, and what you gain by decomposing."
+---
+
+import RuleEditor from "@/components/playground/RuleEditor";
+
+**Multiple Substitution** is a GSUB rule that replaces a single glyph with a sequence of two or more glyphs.
+
+```fea
+sub fi by f i;
+```
+
+Rules are written inside a feature block. Used in the `ccmp` feature, for example:
+
+```fea
+feature ccmp {
+    sub fi by f i;
+} ccmp;
+```
+
+## Why decompose
+
+Unicode encodes some ligatures as characters in their own right. ﬁ (**U+FB01**) is one of them: an independent character, distinct from the sequence of `f` and `i`.
+
+cmap can map each character to only one glyph, so this character is also a single glyph in the font. This rule is the only way to get back to the two glyphs `f` and `i`. **Among GSUB rules, this is the only type that can make the glyph sequence longer than the input.**
+
+Once the glyph is decomposed, features that target `f` and `i` (such as `smcp` and `sups`) just work. If it stays whole, you need a dedicated variant of the ligature glyph for every such feature. **The difference is drawing one glyph per combination versus one glyph per component.**
+
+In writing systems like Thai, where a single character is made of several components with marks stacked on top, the difference grows even larger. Decompose into components, and positioning can be left to GPOS.
+
+## Syntax
+
+```fea
+sub <glyph> by <glyph sequence>;
+```
+
+- `<glyph>` — the single glyph being replaced.
+- `<glyph sequence>` — the two or more glyphs that replace it, written in the order they appear after the substitution.
+
+Glyph classes are not allowed in `<glyph sequence>`. If they were, the rule would be ambiguous about which sequence to substitute.
+
+{/* TODO: /fea/syntax/glyph-classes/ 作成時にグリフクラスへリンク */}
+
+### Shorthand
+
+`sub` is the short form of `substitute`. These two rules are the same:
+
+```fea
+substitute fi by f i;
+```
+
+```fea
+sub fi by f i;
+```
+
+### How the lookup type is determined
+
+The syntax is similar to [Lookup Type 4](/fea/gsub/lookup-4/), but there is no need to state the Lookup Type. The compiler determines it from the shape of the rule.
+
+```fea
+# one glyph → two glyphs = Multiple Substitution (Lookup Type 2)
+sub fi by f i;
+```
+
+```fea
+# two glyphs → one glyph = Ligature Substitution (Lookup Type 4)
+sub f i by fi;
+```
+
+## Try it
+
+<RuleEditor
+  client:visible
+  initialFea={`feature ccmp {
+    sub fi by f i;
+    sub fl by f l;
+} ccmp;`}
+  initialPreviewText="ﬁsh fish ﬂow flow"
+/>
+
+## Features that use this lookup type
+
+{/* TODO: /opentype/gsub/{tag}/ 作成時に各フィーチャーの外部リンクを内部リンクへ差し替え */}
+
+The OpenType specification recommends implementing the following features with this lookup type.
+
+- [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition. Decomposes a single glyph into multiple glyphs before other features run.
+- [`stch`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-stch) — Stretching Glyph Decomposition. Decomposes a glyph that stretches to the width of the enclosed text, such as the Syriac Abbreviation Mark, into a sequence of an odd number of glyphs.
+
+## Specifications
+
+{/* TODO: OpenType 柱でバイナリ構造解説の置き場所が決まったらリンクを追加 */}
+
+- [Adobe OpenType Feature File Specification, §5.b — GSUB LookupType 2: Multiple substitution](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#5.b)
+- [Microsoft OpenType Specification, GSUB — Lookup type 2 subtable: multiple substitution](https://learn.microsoft.com/en-us/typography/opentype/spec/gsub#lookup-type-2-subtable-multiple-substitution)

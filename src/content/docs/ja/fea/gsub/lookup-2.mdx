@@ -1,0 +1,96 @@
+---
+title: "Lookup Type 2 — Multiple Substitution"
+description: "OpenType Feature File で Multiple Substitution（GSUB Lookup Type 2）を書く方法 — 1 つのグリフを複数に分ける規則の構文と、分けることで何が得られるか。"
+---
+
+import RuleEditor from "@/components/playground/RuleEditor";
+
+**Multiple Substitution** は、1 つのグリフを 2 つ以上のグリフの列に置き換える GSUB の規則です。
+
+```fea
+sub fi by f i;
+```
+
+規則はフィーチャーブロックの中に書きます。たとえば `ccmp` フィーチャーで使うと次のようになります。
+
+```fea
+feature ccmp {
+    sub fi by f i;
+} ccmp;
+```
+
+## なぜ分けるのか
+
+Unicode には、合字を 1 つの文字として符号化したものがあります。ﬁ（**U+FB01**）がそれにあたります。`f` と `i` を並べたものとは別の、独立した 1 文字です。
+
+cmap は 1 つの文字に 1 つのグリフしか対応付けられないので、この文字はフォントの中でも 1 つのグリフになります。`f` と `i` の 2 グリフに戻すには、この規則を使うしかありません。**GSUB の規則のうち、グリフ列を入力より長くできるのはこの型だけです。**
+
+分けておけば、`f` と `i` を対象にするフィーチャー（`smcp` や `sups` など）がそのまま効きます。分けなければ、合字のグリフ専用の異体字を、フィーチャーの数だけ用意することになります。**組み合わせの数だけ描くか、部品の数だけ描くかの差です。**
+
+タイ文字のように 1 つの文字が複数の部品でできていて、そこにさらに記号が積まれる文字体系では、この差がもっと大きくなります。部品に分けておけば、位置決めは GPOS に任せられます。
+
+## 構文
+
+```fea
+sub <glyph> by <glyph sequence>;
+```
+
+- `<glyph>` — 置き換え元の 1 つのグリフ。
+- `<glyph sequence>` — 置き換え先の 2 つ以上のグリフ。置き換え後に現れる順で書きます。
+
+`<glyph sequence>` にグリフクラスは使えません。使えるとすると、どの列に置き換えるのか規則が曖昧になるためです。
+
+{/* TODO: /fea/syntax/glyph-classes/ 作成時にグリフクラスへリンク */}
+
+### 省略形
+
+`sub` は `substitute` の省略形です。次の 2 つは同じ規則です。
+
+```fea
+substitute fi by f i;
+```
+
+```fea
+sub fi by f i;
+```
+
+### Lookup Type の判別
+
+[Lookup Type 4](/ja/fea/gsub/lookup-4/) と書式が似ていますが、Lookup Type を明示する必要はありません。コンパイラが規則の形から判別します。
+
+```fea
+# 1 グリフ → 2 グリフ = Multiple Substitution（Lookup Type 2）
+sub fi by f i;
+```
+
+```fea
+# 2 グリフ → 1 グリフ = Ligature Substitution（Lookup Type 4）
+sub f i by fi;
+```
+
+## 試してみる
+
+<RuleEditor
+  client:visible
+  initialFea={`feature ccmp {
+    sub fi by f i;
+    sub fl by f l;
+} ccmp;`}
+  initialPreviewText="ﬁsh fish ﬂow flow"
+/>
+
+## この Lookup Type を使うフィーチャー
+
+{/* TODO: /opentype/gsub/{tag}/ 作成時に各フィーチャーの外部リンクを内部リンクへ差し替え */}
+
+OpenType 仕様にあるフィーチャーのうち、次のものはこの Lookup Type での実装が推奨されています。
+
+- [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition。他のフィーチャーが動く前に、1 つのグリフを複数のグリフへ分解する。
+- [`stch`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-stch) — Stretching Glyph Decomposition。Syriac Abbreviation Mark など、囲んだ文字列の幅に合わせて伸びるグリフを、奇数個のグリフの列に分解する。
+
+## 仕様書
+
+{/* TODO: OpenType 柱でバイナリ構造解説の置き場所が決まったらリンクを追加 */}
+
+- [Adobe OpenType Feature File Specification, §5.b — GSUB LookupType 2: Multiple substitution](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#5.b)
+- [Microsoft OpenType Specification, GSUB — Lookup type 2 subtable: multiple substitution](https://learn.microsoft.com/en-us/typography/opentype/spec/gsub#lookup-type-2-subtable-multiple-substitution)

@@ -28,6 +28,8 @@ sub <glyph sequence> by <glyph>;
 - `<glyph sequence>` — 2 つ以上のグリフまたはグリフクラス。現れる順で書きます。
 - `<glyph>` — 列全体を置き換える 1 つのグリフ。
 
+{/* TODO: /fea/syntax/glyph-classes/ 作成時にグリフクラスへリンク */}
+
 ### 省略形
 
 `sub` は `substitute` の省略形です。次の 2 つは同じ規則です。
@@ -48,7 +50,7 @@ sub f i by fi;
 
 ### Lookup Type の判別
 
-Lookup Type 2 と書式が似ていますが、Lookup Type を明示する必要はありません。コンパイラが規則の形から判別します。
+[Lookup Type 2](/ja/fea/gsub/lookup-2/) と書式が似ていますが、Lookup Type を明示する必要はありません。コンパイラが規則の形から判別します。
 
 ```fea
 # 2 グリフ → 1 グリフ = Ligature Substitution（Lookup Type 4）
@@ -91,18 +93,22 @@ sub fi by f i;
 
 ## この Lookup Type を使うフィーチャー
 
+{/* TODO: /opentype/gsub/{tag}/ 作成時に各フィーチャーの外部リンクを内部リンクへ差し替え */}
+
 OpenType 仕様にあるフィーチャーのうち、次のものはこの Lookup Type での実装が推奨されています。
 
 - [`liga`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga) — Standard Ligatures。*fi* や *ffl* など、通常の合字。
 - [`dlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig) — Discretionary Ligatures。ユーザーが明示的に指定したときだけ適用する装飾的な合字。
 - [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) — Historical Ligatures。long s の組み合わせなど、歴史的な表記の合字。
 - [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) — Required Ligatures。アラビア文字の *lam-alef* など、用字系が必須とする合字。
-- [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition。その合成側の半分。他のフィーチャーが動く前に、文字の並びを 1 つのグリフへまとめる。
+- [`ccmp`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-ccmp) — Glyph Composition/Decomposition。他のフィーチャーが動く前に、文字の並びを 1 つのグリフへまとめる。
 - [`frac`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-frac) — Fractions。推奨実装の 1 つは、数字・スラッシュ・数字の並びを合成済みの分数グリフに対応づける。
 
 [`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig)（Contextual Ligatures）でも合字を組みますが、特定の文脈でだけ働くため、文脈依存の規則で書きます。
 
 ## 仕様書
+
+{/* TODO: OpenType 柱でバイナリ構造解説の置き場所が決まったらリンクを追加 */}
 
 - [Adobe OpenType Feature File Specification, §5.d — GSUB LookupType 4: Ligature substitution](https://adobe-type-tools.github.io/afdko/OpenTypeFeatureFileSpecification.html#5.d)
 - [Microsoft OpenType Specification, GSUB — Lookup type 4 subtable: ligature substitution](https://learn.microsoft.com/en-us/typography/opentype/spec/gsub#lookup-type-4-subtable-ligature-substitution)
