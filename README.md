@@ -4,14 +4,12 @@
 
 https://otspec.dev
 
-> [!IMPORTANT]
-> **🚧 構築中です。まだコントリビューションを受け付けていません。**
+> [!NOTE]
+> **🚧 構築中です。いまは Pull Request を受け付けていません。**
+> コンテンツが揃って整ったら受け付ける予定です。理由は [CONTRIBUTING.md](CONTRIBUTING.md) をご覧ください。
 >
-> サイトの構造もページの形も固まっておらず、中身のあるページは現時点で 1 枚だけです。コラボレーター以外による Pull Request と Issue の作成は現在ブロックしています。理由は [CONTRIBUTING.md](CONTRIBUTING.md) に書いています。
->
-> **🚧 Under construction. Not accepting contributions yet.**
->
-> Pull requests and issues from outside collaborators are currently disabled. See [CONTRIBUTING.md](CONTRIBUTING.md) for why.
+> **🚧 Under construction. Pull requests are not being accepted at the moment.**
+> They will open once there is enough content and the structure has settled. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## なぜ作るのか
 
