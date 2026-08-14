@@ -1,0 +1,62 @@
+---
+title: "liga — Standard Ligatures"
+description: "OpenType の liga フィーチャー — 一般的に使われる合字をまとめたフィーチャー。何を入れるかは制作者が決める。"
+---
+
+import FeatureSample from "@/components/playground/FeatureSample";
+import RuleEditor from "@/components/playground/RuleEditor";
+
+**`liga`**（Standard Ligatures）は、一般的に使われる合字をまとめたフィーチャーです。
+
+たとえば `fi` や `fl` の合字がそれにあたります。一般的に使う合字だと制作者が判断すれば、何を入れてもかまいません。
+
+[liga によく含まれる合字](/ja/drafts/liga-ligature-sets/) に目安をまとめています。
+
+## サンプル
+
+<FeatureSample
+  client:visible
+  featureTag="liga"
+  initialFea={`feature liga {
+    sub f f i by f_f_i;
+} liga;`}
+  initialPreviewText="Official"
+/>
+
+## 合字に関するフィーチャーの使い分け
+
+{/* TODO: /opentype/gsub/clig/ /opentype/gsub/dlig/ /opentype/gsub/hlig/ /opentype/gsub/rlig/ 作成時に外部リンクを内部リンクへ差し替え */}
+
+合字を担うフィーチャーは、`liga` を含めて 5 つあります。
+
+| フィーチャー | 用途 |
+|---|---|
+| [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) | 用字系の正しい表示に必須の合字。常に適用される |
+| `liga` | 一般的に使われる合字。既定でオン |
+| [`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig) | 特定の文脈でだけ推奨される合字。既定でオン |
+| [`dlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig) | 特別な効果のために、ユーザーの好みで使う合字。既定でオフ |
+| [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) | 過去に使われ、今では時代がかって見える合字。既定でオフ |
+
+アラビア文字の ل（lam）と ا（alef）は、並ぶと必ず لا という 1 つの形になります。字形の好みではなく、用字系が要求する形です。こうした合字は `liga` ではなく `rlig` に入れます。
+
+例えば、`f` と `t` は合字にしたいが、前にアセンダーのある文字が来るときは合字にしたくない（筆記体など）といった、前後の文字（文脈）で組むかどうかが変わる合字は、`liga` ではなく `clig` に入れます。
+
+## Feature File による実装
+
+規則は [Lookup Type 4](/ja/fea/gsub/lookup-4/) で書きます。
+
+<RuleEditor
+  client:visible
+  initialFea={`feature liga {
+    sub f f i by f_f_i;
+    sub f f l by f_f_l;
+    sub f f by f_f;
+    sub f i by fi;
+    sub f l by fl;
+} liga;`}
+  initialPreviewText="difficult waffle"
+/>
+
+## 仕様書
+
+- [Microsoft OpenType Specification, Registered features — Tag: 'liga'](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga)

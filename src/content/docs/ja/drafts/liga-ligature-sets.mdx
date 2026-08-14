@@ -1,0 +1,107 @@
+---
+title: "liga によく含まれる合字"
+description: "用字系ごとに、liga で推奨される合字と、その他よく含まれる合字を整理した調査メモ。未整理。"
+---
+
+:::caution[未整理のページ]
+調査に基づくメモの置き場です。`liga` の解説は [liga — Standard Ligatures](/ja/opentype/gsub/liga/) にあります。
+:::
+
+`liga` は任意の合字を定義できますが、目安として用字系ごとの推奨や実践をこのページにまとめました。
+
+{/* TODO: 母集団が筆者環境のため代表性を主張できない。Google Fonts で取り直すか、母集団を明記するか未決 */}
+
+## ラテン文字
+
+### fi fl
+
+`fi` と `fl` は、OpenType より前の規格から標準のグリフセットに入り続けてきました。
+
+| 規格 | `fi` | `fl` |
+|---|---|---|
+| Adobe StandardEncoding | 174 | 175 |
+| MacRoman | 0xDE | 0xDF |
+| `post` テーブルの標準 Macintosh 順 | 192 | 193 |
+| CFF Standard Strings | SID 109 | SID 110 |
+| WGL4 | U+FB01 | U+FB02 |
+| Adobe Latin 1〜5 | 全レベル | 全レベル |
+| Adobe-Japan1 | CID 112（Supplement 0） | CID 113（Supplement 0） |
+| Adobe-KR | CID 3002（Supplement 0） | CID 3003（Supplement 0） |
+
+### ff ffi ffl
+
+`ff` `ffi` `ffl` は Adobe の Expert セットに由来しています。
+
+| 規格 | `ff` `ffi` `ffl` |
+|---|---|
+| CFF Standard Strings | SID 266–268 |
+| Adobe-Japan1 | CID 9358–9360（Supplement 4） |
+| Adobe-KR | CID 3001, 3004, 3005（Supplement 0） |
+
+Glyphs がグリフ名から `liga` を自動生成するときに対象にするのは、`fi` `fl` `ff` `ffi` `ffl` の 5 つです。
+
+### その他
+
+その他、仕様等にはありませんが、`liga` に含まれるものには以下のようなものがあります。
+
+- `fj` `ffj` / `ft` `tt` / `fb` `fh` `fk` と `ffb` `ffh` `ffk` — `f` で始まる組み合わせの拡張
+- `IJ` `ij` — オランダ語のダイグラフ
+
+以下は書体の特性によって追加されます。
+
+- `or` `oo` `rr` `ar` など、筆記体の文字と文字のつながり
+- `Ch` `Th` `bb` `dd` `gg` など、カリグラフィ体独自の組み合わせ
+- Apple の SF 系 — 文字と U+20DD（結合用囲み丸）の並びを Ⓐ のような囲み文字にする規則を 208 種
+
+## 日本語
+
+- 半濁点の付いたかな（か゚ ク゚ ㇷ゚ など）
+
+Adobe-Japan1-5 で追加されたもので、[adobe-type-tools/Adobe-Japan1](https://github.com/adobe-type-tools/Adobe-Japan1) で配布されている推奨 GSUB に含まれています。
+
+ヒラギノ明朝 ProN・ヒラギノ角ゴシック・ヒラギノ丸ゴ ProN・BIZ UDゴシックは持っていて、Noto Serif JP は持っていません。
+
+## 中国語
+
+- 拼音の合字（Adobe-CNS1-7）
+
+## アラビア文字
+
+- الله（Allah）・لله（lillah）・ريال（リヤル記号）などの語の合字
+- لم（lam-meem）や語末の noon との組み合わせなど、文字どうしの合字
+
+Arial・Tahoma・Times New Roman が `liga` に持つのは、語の合字の 3 語だけです。文字どうしの合字は伝統的な Naskh に入り、Damascus は 22 規則を持っています。
+
+候補を探すなら、Unicode の Arabic Presentation Forms-A（U+FB50–FDFF）が唯一の符号化された一覧です。ただし Unicode 自身が、この集合は書体の実態と一致せず、一般の交換に使うものではないとしています。
+
+## シリア文字
+
+- Sadhe+Nun、Lamadh+Lamadh、Nun+Alaph など（Serto）
+- He+Yudh、Taw+Alaph、Taw+Yudh（East Syriac）
+
+書風によって変わります。Meltho の書体では、Serto が 12〜40 規則、East Syriac が 3 組、Estrangelo が 0〜6 規則です。
+
+## アルメニア文字
+
+- ﬓ ﬔ ﬕ ﬖ ﬗ（U+FB13–FB17）
+- ու
+
+確認できたのは Noto Sans Armenian の 1 書体です。
+
+## 出典
+
+- [PostScript Language Reference, 3rd edition, Appendix E](https://www.adobe.com/jp/print/postscript/pdfs/PLRM.pdf) — Adobe StandardEncoding
+- [Apple, ROMAN.TXT](https://www.unicode.org/Public/MAPPINGS/VENDORS/APPLE/ROMAN.TXT) — MacRoman
+- [Microsoft OpenType Specification, post — PostScript table](https://learn.microsoft.com/en-us/typography/opentype/spec/post) — 標準 Macintosh 順
+- [Adobe Technical Note #5176, The Compact Font Format Specification](https://adobe-type-tools.github.io/font-tech-notes/pdfs/5176.CFF.pdf) — Standard Strings
+- [Microsoft, WGL4](https://learn.microsoft.com/en-us/typography/develop/wgl4)
+- [adobe-type-tools/adobe-latin-charsets](https://github.com/adobe-type-tools/adobe-latin-charsets) — Adobe Latin 1〜5
+- [adobe-type-tools/Adobe-Japan1](https://github.com/adobe-type-tools/Adobe-Japan1) — CID 一覧と推奨 GSUB
+- [adobe-type-tools/Adobe-KR](https://github.com/adobe-type-tools/Adobe-KR) — 同上
+- [adobe-type-tools/Adobe-CNS1](https://github.com/adobe-type-tools/Adobe-CNS1) — 同上
+- [Glyphs Learn: Ligatures](https://glyphsapp.com/learn/ligatures)
+- [Microsoft, Developing OpenType Fonts for Arabic Script](https://learn.microsoft.com/en-us/typography/script-development/arabic) — lam-meem
+- [Unicode, Arabic Presentation Forms-A](https://www.unicode.org/charts/PDF/UFB50.pdf)
+- [Microsoft, Developing OpenType Fonts for Syriac Script](https://learn.microsoft.com/en-us/typography/script-development/syriac) — lamadh-alaph
+- [Beth Mardutho, Meltho Fonts](https://bethmardutho.org/meltho/) — シリア文字の書風別の合字
+- [The Unicode Standard, Armenian](https://www.unicode.org/versions/latest/) — アルメニア文字の合字

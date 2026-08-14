@@ -1,0 +1,62 @@
+---
+title: "liga — Standard Ligatures"
+description: "The OpenType liga feature — it gathers the ligatures that are in common use, and the font's maker decides what goes in it."
+---
+
+import FeatureSample from "@/components/playground/FeatureSample";
+import RuleEditor from "@/components/playground/RuleEditor";
+
+**`liga`** (Standard Ligatures) gathers the ligatures that are in common use.
+
+The `fi` and `fl` ligatures are examples. Anything can go in it, so long as the font's maker judges it a ligature in common use.
+
+[Ligatures commonly found in liga](/drafts/liga-ligature-sets/) gives a rough guide.
+
+## Example
+
+<FeatureSample
+  client:visible
+  featureTag="liga"
+  initialFea={`feature liga {
+    sub f f i by f_f_i;
+} liga;`}
+  initialPreviewText="Official"
+/>
+
+## Choosing among the ligature features
+
+{/* TODO: /opentype/gsub/clig/ /opentype/gsub/dlig/ /opentype/gsub/hlig/ /opentype/gsub/rlig/ 作成時に外部リンクを内部リンクへ差し替え */}
+
+Five features form ligatures, `liga` among them.
+
+| Feature | Purpose |
+|---|---|
+| [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) | Ligatures required for correct display of a script. Always applied |
+| `liga` | Ligatures in common use. On by default |
+| [`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig) | Ligatures recommended only in a specific context. On by default |
+| [`dlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig) | Ligatures used for special effect, at the user's preference. Off by default |
+| [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) | Ligatures once in common use that now appear anachronistic. Off by default |
+
+In Arabic, ل (lam) followed by ا (alef) always takes the single form لا. This is not a matter of taste but a form the script requires. Ligatures like this belong in `rlig`, not `liga`.
+
+For example, you may want `f` and `t` to form a ligature, but not when an ascending letter comes before them, as in a script face. Ligatures that form or not depending on the surrounding letters — the context — belong in `clig`, not `liga`.
+
+## Writing it in a feature file
+
+The rules are written with [Lookup Type 4](/fea/gsub/lookup-4/).
+
+<RuleEditor
+  client:visible
+  initialFea={`feature liga {
+    sub f f i by f_f_i;
+    sub f f l by f_f_l;
+    sub f f by f_f;
+    sub f i by fi;
+    sub f l by fl;
+} liga;`}
+  initialPreviewText="difficult waffle"
+/>
+
+## Specifications
+
+- [Microsoft OpenType Specification, Registered features — Tag: 'liga'](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ko#tag-liga)

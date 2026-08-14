@@ -34,6 +34,19 @@ export default defineConfig({
       },
       sidebar: [
         {
+          // OpenType 柱（意味の索引）。テーブル索引はランディングに統合済み。
+          // 現時点で中身があるのは GSUB のみ。他グループ（GPOS / テーブル）は
+          // ページが増えたときに同じ形で追加する。
+          label: "OpenType",
+          items: [
+            { label: "Overview", link: "/opentype/" },
+            {
+              label: "GSUB",
+              items: [{ autogenerate: { directory: "opentype/gsub" } }],
+            },
+          ],
+        },
+        {
           // Feature File 柱（構文の索引）。現時点で中身があるのは GSUB Rules のみ。
           // 他グループ（Syntax basics / GPOS Rules / Values / Structure / Special
           // features / Table blocks）はページが増えたときに同じ形で追加する。
@@ -47,14 +60,15 @@ export default defineConfig({
           ],
         },
         {
-          // OpenType 柱（意味の索引）。テーブル索引はランディングに統合済み。
-          label: "OpenType",
-          items: [{ autogenerate: { directory: "opentype" } }],
-        },
-        {
           label: "Glossary",
           translations: { ja: "用語集" },
           items: [{ autogenerate: { directory: "glossary" } }],
+        },
+        {
+          // 調査結果の置き場。構成が固まったら本編のページへ移し、ここからは消す
+          label: "Drafts",
+          translations: { ja: "未整理" },
+          items: [{ autogenerate: { directory: "drafts" } }],
         },
       ],
       defaultLocale: "root",

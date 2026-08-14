@@ -1,0 +1,107 @@
+---
+title: "Ligatures commonly found in liga"
+description: "Research notes arranged by script: which ligatures are recommended for liga, and which others are commonly included. Unsorted."
+---
+
+:::caution[Unsorted page]
+A place to keep research notes. The reference page for the feature is [liga — Standard Ligatures](/opentype/gsub/liga/).
+:::
+
+`liga` can hold any ligature at all. This page collects, script by script, what is recommended and what is done in practice, as a rough guide.
+
+{/* TODO: 母集団が筆者環境のため代表性を主張できない。Google Fonts で取り直すか、母集団を明記するか未決 */}
+
+## Latin
+
+### fi fl
+
+`fi` and `fl` have stayed in the standard glyph sets since before OpenType.
+
+| Standard | `fi` | `fl` |
+|---|---|---|
+| Adobe StandardEncoding | 174 | 175 |
+| MacRoman | 0xDE | 0xDF |
+| Standard Macintosh ordering in the `post` table | 192 | 193 |
+| CFF Standard Strings | SID 109 | SID 110 |
+| WGL4 | U+FB01 | U+FB02 |
+| Adobe Latin 1–5 | All levels | All levels |
+| Adobe-Japan1 | CID 112 (Supplement 0) | CID 113 (Supplement 0) |
+| Adobe-KR | CID 3002 (Supplement 0) | CID 3003 (Supplement 0) |
+
+### ff ffi ffl
+
+`ff` `ffi` `ffl` descend from Adobe's Expert set.
+
+| Standard | `ff` `ffi` `ffl` |
+|---|---|
+| CFF Standard Strings | SID 266–268 |
+| Adobe-Japan1 | CID 9358–9360 (Supplement 4) |
+| Adobe-KR | CID 3001, 3004, 3005 (Supplement 0) |
+
+When Glyphs generates `liga` automatically from glyph names, it covers `fi` `fl` `ff` `ffi` `ffl`.
+
+### Others
+
+Beyond the standards, ligatures like these turn up in `liga`.
+
+- `fj` `ffj` / `ft` `tt` / `fb` `fh` `fk` with `ffb` `ffh` `ffk` — extensions of the `f` combinations
+- `IJ` `ij` — Dutch digraphs
+
+The following are added according to the character of the typeface.
+
+- `or` `oo` `rr` `ar` and other letter-to-letter connections in a script face
+- `Ch` `Th` `bb` `dd` `gg` and other combinations of a calligraphic face's own
+- Apple's SF families — 208 rules turning a letter followed by U+20DD (combining enclosing circle) into an enclosed character such as Ⓐ
+
+## Japanese
+
+- Kana carrying handakuten (か゚ ク゚ ㇷ゚ and others)
+
+Added in Adobe-Japan1-5, and part of the recommended GSUB distributed at [adobe-type-tools/Adobe-Japan1](https://github.com/adobe-type-tools/Adobe-Japan1).
+
+Hiragino Mincho ProN, Hiragino Kaku Gothic, Hiragino Maru Gothic ProN and BIZ UDGothic carry them; Noto Serif JP does not.
+
+## Chinese
+
+- Pinyin ligatures (Adobe-CNS1-7)
+
+## Arabic
+
+- Word ligatures such as الله (Allah), لله (lillah) and ريال (the riyal sign)
+- Letter-to-letter ligatures such as لم (lam-meem) and combinations with a final noon
+
+Arial, Tahoma and Times New Roman hold only the three word ligatures in `liga`. Letter-to-letter ligatures belong to traditional Naskh; Damascus has 22 rules.
+
+To look for candidates, Unicode's Arabic Presentation Forms-A (U+FB50–FDFF) is the only encoded list there is. Unicode itself notes that the set does not match what typefaces actually do, and is not for general interchange.
+
+## Syriac
+
+- Sadhe+Nun, Lamadh+Lamadh, Nun+Alaph and others (Serto)
+- He+Yudh, Taw+Alaph, Taw+Yudh (East Syriac)
+
+It varies by style. Among the Meltho fonts, Serto has 12–40 rules, East Syriac three, and Estrangelo zero to six.
+
+## Armenian
+
+- ﬓ ﬔ ﬕ ﬖ ﬗ (U+FB13–FB17)
+- ու
+
+Noto Sans Armenian is the one font this was confirmed in.
+
+## Sources
+
+- [PostScript Language Reference, 3rd edition, Appendix E](https://www.adobe.com/jp/print/postscript/pdfs/PLRM.pdf) — Adobe StandardEncoding
+- [Apple, ROMAN.TXT](https://www.unicode.org/Public/MAPPINGS/VENDORS/APPLE/ROMAN.TXT) — MacRoman
+- [Microsoft OpenType Specification, post — PostScript table](https://learn.microsoft.com/en-us/typography/opentype/spec/post) — standard Macintosh ordering
+- [Adobe Technical Note #5176, The Compact Font Format Specification](https://adobe-type-tools.github.io/font-tech-notes/pdfs/5176.CFF.pdf) — Standard Strings
+- [Microsoft, WGL4](https://learn.microsoft.com/en-us/typography/develop/wgl4)
+- [adobe-type-tools/adobe-latin-charsets](https://github.com/adobe-type-tools/adobe-latin-charsets) — Adobe Latin 1–5
+- [adobe-type-tools/Adobe-Japan1](https://github.com/adobe-type-tools/Adobe-Japan1) — CID list and recommended GSUB
+- [adobe-type-tools/Adobe-KR](https://github.com/adobe-type-tools/Adobe-KR) — the same
+- [adobe-type-tools/Adobe-CNS1](https://github.com/adobe-type-tools/Adobe-CNS1) — the same
+- [Glyphs Learn: Ligatures](https://glyphsapp.com/learn/ligatures)
+- [Microsoft, Developing OpenType Fonts for Arabic Script](https://learn.microsoft.com/en-us/typography/script-development/arabic) — lam-meem
+- [Unicode, Arabic Presentation Forms-A](https://www.unicode.org/charts/PDF/UFB50.pdf)
+- [Microsoft, Developing OpenType Fonts for Syriac Script](https://learn.microsoft.com/en-us/typography/script-development/syriac) — lamadh-alaph
+- [Beth Mardutho, Meltho Fonts](https://bethmardutho.org/meltho/) — Syriac ligatures by style
+- [The Unicode Standard, Armenian](https://www.unicode.org/versions/latest/) — Armenian ligatures
