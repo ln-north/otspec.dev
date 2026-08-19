@@ -32,8 +32,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 SOURCE_WOFF2 = REPO_ROOT / "public" / "fonts" / "vollkorn-var.woff2"
 OUTPUT_TTF = REPO_ROOT / "public" / "fonts" / "vollkorn-workbench.ttf"
 
-# 合字デモで実際に使う合字グリフ名（Vollkorn の実測グリフ名。f_i や ff ではない）
-LIGATURE_GLYPHS = ["fi", "fl", "f_f", "f_f_i", "f_f_l"]
+# 合字デモで実際に使う合字グリフ名（Vollkorn の実測グリフ名。f_i や ff ではない）。
+# c_t / s_t / T_h は Vollkorn が dlig に持つ合字で、dlig のデモに使う
+LIGATURE_GLYPHS = ["fi", "fl", "f_f", "f_f_i", "f_f_l", "c_t", "s_t", "T_h"]
 
 # 基本ラテン文字・数字・スペース・基本記号。ASCII 印字可能範囲をそのまま使う
 # （f, i, l はここに含まれる。合字は cmap 経由で辿れないため上の LIGATURE_GLYPHS で明示する）

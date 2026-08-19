@@ -1,0 +1,84 @@
+---
+title: "dlig によく含まれる合字"
+description: "用字系ごとに、dlig で推奨される合字と、その他よく含まれる合字を整理した調査メモ。未整理。"
+---
+
+:::caution[未整理のページ]
+調査に基づくメモの置き場です。`dlig` の解説は [dlig — Discretionary Ligatures](/ja/opentype/gsub/dlig/) にあります。
+:::
+
+`dlig` は任意の合字を定義できますが、目安として用字系ごとの推奨や実践をこのページにまとめました。
+
+## ラテン文字
+
+### ct st
+
+- `c` + `t` → `ct`
+- `s` + `t` → `st`
+
+`ct` は OpenType 仕様の `dlig` の Example に挙げられています。`st` は仕様には出てきませんが、実際の書体では `ct` と対で入っています。
+
+### その他
+
+- `ck` `sp` `rt` `Th`
+- long s の合字（`ſi` `ſt` `ſh` など）
+- `oo` `LL` `TT` `www` など、書体の遊びによるもの
+
+`Th` は `liga` に入れる書体もあります。Adobe の Minion Pro は `liga` に持っていましたが、後継の Minion 3 は `dlig` に移しました。
+
+## 日本語
+
+- 単位の組文字 — キロ → ㌔、リットル → ㍑、mm → ㎜
+- 略語の組文字 — No → №、Tel → ℡、FAX → ℻
+- 法人の組文字 — 株式会社 → ㍿
+- 元号 — 明治 → ㍾、平成 → ㍻、令和 → ㋿
+- かなの合字 — より → ゟ、コト → ヿ、ます → 〼
+- 語の組文字 — 温泉 → ♨、野球 → ⚾
+
+英数字の入力は半角・全角・プロポーショナルの 3 系統が用意されていて、`Ｎｏ` でも `No` でも № になります。
+
+Adobe-Japan1-7 の推奨 GSUB では 446 規則あり、`liga` の 40 規則を大きく上回ります。Adobe-Japan1-3 の時点では 154 規則でした。
+
+Supplement ごとに増えています。㍾ ㍽ ㍼ は Supplement 0、㍻ は Supplement 1、‼ ⁉ と法人の組文字は Supplement 4、⁇ ⁈ と ヿ 〼 は Supplement 5、㋿ は Supplement 7 です。
+
+## 韓国語
+
+- 単位の組文字 — Hz → ㎐、MHz → ㎒、GPa → ㎬、C/kg → ㏆ など約 90 種
+- 約物の合字 — `!!` → ‼、`!?` → ⁉、`?!` → ⁈、`??` → ⁇
+- KS → ㉿（韓国産業規格のマーク）
+
+Adobe-KR-9 の推奨 GSUB で 95 規則です。ハングルそのものの合字は入っていません。
+
+## 中国語
+
+簡体字向けの Adobe-GB1-6 は 2 規則だけです。
+
+- Ｎｏ． → №
+- ＴＭ → ™
+
+繁体字向けの Adobe-CNS1-7 は 26 規則で、単位の組文字が加わります。
+
+- log → ㏒、ln → ㏑、mil → ㏕
+- mm → ㎜、cm → ㎝、km → ㎞、m2 → ㎡、mg → ㎎、kg → ㎏
+
+## ヘブライ文字
+
+- א（alef）+ ל（lamed）→ ﭏ
+
+Microsoft の Hebrew script development 仕様が `dlig` の例として挙げています。同仕様の feature 一覧に `liga` はなく、任意の合字の置き場が `dlig` です。
+
+## アラビア文字
+
+- ب（beh）+ ج（jeem）→ 装飾的な合字
+
+同仕様の図例です。
+
+## 出典
+
+- [Microsoft OpenType Specification, Registered features — Tag: 'dlig'](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig)
+- [adobe-type-tools/Adobe-Japan1](https://github.com/adobe-type-tools/Adobe-Japan1) — 推奨 GSUB
+- [adobe-type-tools/Adobe-KR](https://github.com/adobe-type-tools/Adobe-KR) — 同上
+- [adobe-type-tools/Adobe-GB1](https://github.com/adobe-type-tools/Adobe-GB1) — 同上
+- [adobe-type-tools/Adobe-CNS1](https://github.com/adobe-type-tools/Adobe-CNS1) — 同上
+- [Microsoft, Developing OpenType Fonts for Hebrew Script](https://learn.microsoft.com/en-us/typography/script-development/hebrew) — alef-lamed
+- [Microsoft, Developing OpenType Fonts for Arabic Script](https://learn.microsoft.com/en-us/typography/script-development/arabic) — beh-jeem

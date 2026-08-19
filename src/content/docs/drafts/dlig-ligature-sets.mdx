@@ -1,0 +1,84 @@
+---
+title: "Ligatures commonly found in dlig"
+description: "Research notes arranged by script: which ligatures are recommended for dlig, and which others are commonly included. Unsorted."
+---
+
+:::caution[Unsorted page]
+A place to keep research notes. The reference page for the feature is [dlig — Discretionary Ligatures](/opentype/gsub/dlig/).
+:::
+
+`dlig` can hold any ligature at all. This page collects, script by script, what is recommended and what is done in practice, as a rough guide.
+
+## Latin
+
+### ct st
+
+- `c` + `t` → `ct`
+- `s` + `t` → `st`
+
+`ct` is the Example given for `dlig` in the OpenType specification. `st` does not appear there, but fonts carry it alongside `ct`.
+
+### Others
+
+- `ck` `sp` `rt` `Th`
+- Long s ligatures (`ſi` `ſt` `ſh` and others)
+- `oo` `LL` `TT` `www` and other play on the part of the typeface
+
+Some fonts put `Th` in `liga` instead. Adobe's Minion Pro had it there; its successor Minion 3 moved it to `dlig`.
+
+## Japanese
+
+- Unit composites — キロ → ㌔, リットル → ㍑, mm → ㎜
+- Abbreviation composites — No → №, Tel → ℡, FAX → ℻
+- Corporate composites — 株式会社 → ㍿
+- Era names — 明治 → ㍾, 平成 → ㍻, 令和 → ㋿
+- Kana ligatures — より → ゟ, コト → ヿ, ます → 〼
+- Word composites — 温泉 → ♨, 野球 → ⚾
+
+Latin input comes in three forms — halfwidth, fullwidth and proportional — so both `Ｎｏ` and `No` yield №.
+
+The recommended GSUB for Adobe-Japan1-7 holds 446 rules, far more than the 40 in `liga`. Adobe-Japan1-3 had 154.
+
+They accumulated supplement by supplement. ㍾ ㍽ ㍼ come from Supplement 0, ㍻ from Supplement 1, ‼ ⁉ and the corporate composites from Supplement 4, ⁇ ⁈ and ヿ 〼 from Supplement 5, and ㋿ from Supplement 7.
+
+## Korean
+
+- Unit composites — Hz → ㎐, MHz → ㎒, GPa → ㎬, C/kg → ㏆, about 90 of them
+- Punctuation ligatures — `!!` → ‼, `!?` → ⁉, `?!` → ⁈, `??` → ⁇
+- KS → ㉿ (the Korean Industrial Standards mark)
+
+The recommended GSUB for Adobe-KR-9 holds 95 rules. It has no Hangul ligatures.
+
+## Chinese
+
+For simplified Chinese, Adobe-GB1-6 has only two rules.
+
+- Ｎｏ． → №
+- ＴＭ → ™
+
+For traditional Chinese, Adobe-CNS1-7 has 26, adding unit composites.
+
+- log → ㏒, ln → ㏑, mil → ㏕
+- mm → ㎜, cm → ㎝, km → ㎞, m2 → ㎡, mg → ㎎, kg → ㎏
+
+## Hebrew
+
+- א (alef) + ל (lamed) → ﭏ
+
+Microsoft's Hebrew script development specification gives this as the example for `dlig`. Its feature list has no `liga`, so `dlig` is where optional ligatures go.
+
+## Arabic
+
+- ب (beh) + ج (jeem) → a decorative ligature
+
+From the figure in the same specification.
+
+## Sources
+
+- [Microsoft OpenType Specification, Registered features — Tag: 'dlig'](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig)
+- [adobe-type-tools/Adobe-Japan1](https://github.com/adobe-type-tools/Adobe-Japan1) — recommended GSUB
+- [adobe-type-tools/Adobe-KR](https://github.com/adobe-type-tools/Adobe-KR) — the same
+- [adobe-type-tools/Adobe-GB1](https://github.com/adobe-type-tools/Adobe-GB1) — the same
+- [adobe-type-tools/Adobe-CNS1](https://github.com/adobe-type-tools/Adobe-CNS1) — the same
+- [Microsoft, Developing OpenType Fonts for Hebrew Script](https://learn.microsoft.com/en-us/typography/script-development/hebrew) — alef-lamed
+- [Microsoft, Developing OpenType Fonts for Arabic Script](https://learn.microsoft.com/en-us/typography/script-development/arabic) — beh-jeem

@@ -1,0 +1,72 @@
+---
+title: "dlig — Discretionary Ligatures"
+description: "OpenType の dlig フィーチャー — 特別な効果のために使う合字をまとめたフィーチャー。既定でオフで、ユーザーが指定して初めて適用される。"
+---
+
+import FeatureSample from "@/components/playground/FeatureSample";
+import RuleEditor from "@/components/playground/RuleEditor";
+
+**`dlig`**（Discretionary Ligatures）は、ユーザーが望んだときだけ使う合字をまとめたフィーチャーです。
+
+たとえば `ct` や `st` の合字がそれにあたります。特別な効果のために使う合字だと制作者が判断すれば、何を入れてもかまいません。
+
+[dlig によく含まれる合字](/ja/drafts/dlig-ligature-sets/) に目安をまとめています。
+
+## サンプル
+
+<FeatureSample
+  client:visible
+  featureTag="dlig"
+  initialFea={`feature dlig {
+    sub c t by c_t;
+    sub s t by s_t;
+} dlig;`}
+  initialPreviewText="perfect"
+/>
+
+<FeatureSample
+  client:visible
+  featureTag="dlig"
+  fontPath="/fonts/bizudgothic-workbench.ttf"
+  initialFea={`# 株 式 会 社 -> ㍿
+feature dlig {
+    sub uni682A uni5F0F uni4F1A uni793E by uni337F;
+} dlig;`}
+  initialPreviewText="株式会社"
+/>
+
+## 合字に関するフィーチャーの使い分け
+
+{/* TODO: /opentype/gsub/clig/ /opentype/gsub/hlig/ /opentype/gsub/rlig/ 作成時に外部リンクを内部リンクへ差し替え */}
+
+合字を担うフィーチャーは、`dlig` を含めて 5 つあります。
+
+| フィーチャー | 用途 |
+|---|---|
+| [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) | 用字系の正しい表示に必須の合字。常に適用される |
+| [`liga`](/ja/opentype/gsub/liga/) | 一般的に使われる合字。既定でオン |
+| [`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig) | 特定の文脈でだけ推奨される合字。既定でオン |
+| `dlig` | 特別な効果のために、ユーザーの好みで使う合字。既定でオフ |
+| [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) | 過去に使われ、今では時代がかって見える合字。既定でオフ |
+
+`dlig` は既定でオフです。ユーザーが指定して初めて適用されます。
+
+同じく既定でオフの `hlig` は、歴史的な表記の合字が対象です。装飾のために使う合字は `dlig` に入れます。
+
+## Feature File による実装
+
+規則は [Lookup Type 4](/ja/fea/gsub/lookup-4/) で書きます。
+
+<RuleEditor
+  client:visible
+  initialFea={`feature dlig {
+    sub c t by c_t;
+    sub s t by s_t;
+    sub T h by T_h;
+} dlig;`}
+  initialPreviewText="The perfect best"
+/>
+
+## 仕様書
+
+- [Microsoft OpenType Specification, Registered features — Tag: 'dlig'](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig)

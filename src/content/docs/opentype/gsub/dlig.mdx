@@ -1,0 +1,72 @@
+---
+title: "dlig — Discretionary Ligatures"
+description: "The OpenType dlig feature — it gathers the ligatures used for special effect. Off by default, applied only when the user asks for it."
+---
+
+import FeatureSample from "@/components/playground/FeatureSample";
+import RuleEditor from "@/components/playground/RuleEditor";
+
+**`dlig`** (Discretionary Ligatures) gathers the ligatures used only when the reader asks for them.
+
+The `ct` and `st` ligatures are examples. Anything can go in it, so long as the font's maker judges it a ligature for special effect.
+
+[Ligatures commonly found in dlig](/drafts/dlig-ligature-sets/) gives a rough guide.
+
+## Example
+
+<FeatureSample
+  client:visible
+  featureTag="dlig"
+  initialFea={`feature dlig {
+    sub c t by c_t;
+    sub s t by s_t;
+} dlig;`}
+  initialPreviewText="perfect"
+/>
+
+<FeatureSample
+  client:visible
+  featureTag="dlig"
+  fontPath="/fonts/bizudgothic-workbench.ttf"
+  initialFea={`# 株 式 会 社 -> ㍿
+feature dlig {
+    sub uni682A uni5F0F uni4F1A uni793E by uni337F;
+} dlig;`}
+  initialPreviewText="株式会社"
+/>
+
+## Choosing among the ligature features
+
+{/* TODO: /opentype/gsub/clig/ /opentype/gsub/hlig/ /opentype/gsub/rlig/ 作成時に外部リンクを内部リンクへ差し替え */}
+
+Five features form ligatures, `dlig` among them.
+
+| Feature | Purpose |
+|---|---|
+| [`rlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_pt#tag-rlig) | Ligatures required for correct display of a script. Always applied |
+| [`liga`](/opentype/gsub/liga/) | Ligatures in common use. On by default |
+| [`clig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig) | Ligatures recommended only in a specific context. On by default |
+| `dlig` | Ligatures used for special effect, at the user's preference. Off by default |
+| [`hlig`](https://learn.microsoft.com/en-us/typography/opentype/spec/features_fj#tag-hlig) | Ligatures once in common use that now appear anachronistic. Off by default |
+
+`dlig` is off by default. It applies only once the user asks for it.
+
+`hlig` is off by default too, but it covers ligatures from historical orthography. Ligatures used for decoration go in `dlig`.
+
+## Writing it in a feature file
+
+The rules are written with [Lookup Type 4](/fea/gsub/lookup-4/).
+
+<RuleEditor
+  client:visible
+  initialFea={`feature dlig {
+    sub c t by c_t;
+    sub s t by s_t;
+    sub T h by T_h;
+} dlig;`}
+  initialPreviewText="The perfect best"
+/>
+
+## Specifications
+
+- [Microsoft OpenType Specification, Registered features — Tag: 'dlig'](https://learn.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-dlig)
